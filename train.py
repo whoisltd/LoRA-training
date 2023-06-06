@@ -317,7 +317,7 @@ if __name__ == "__main__":
     backend = "nccl"
     model_path = 'bigscience/bloom-1b7'
     if os.environ.get("DEBUG"):
-        data_path = 'test_data.json'
+        data_path = '/kaggle/working/LoRA-training/test_data.json'
     else:
         data_path = 'alpaca_data.json'
         download_from_driver(path= DRIVER_DATA_PATH, location_path= data_path)
