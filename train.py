@@ -144,6 +144,7 @@ class Trainer:
                     ### YOUR CODE HERE ###
                     # TODO: optimizer step
                     # TODO: update scaler factor 
+                    loss = torch.tensor(loss)
                     self.gradscaler.scale(loss).backward()
                     self.gradscaler.step(self.optimizer)
                     self.gradscaler.update()
