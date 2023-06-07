@@ -183,7 +183,7 @@ class Trainer:
         data_trainloader = DataLoader(
             train_dataset,
             batch_size=self.batch_size,
-            shuffle=True,
+            # shuffle=True,
             sampler=DistributedSampler(train_dataset) if self.is_ddp_training else None,
             collate_fn=DataCollatorForSeq2Seq(self.tokenizer, padding=True, return_tensors="pt"),
         ) ### YOUR CODE HERE ###
