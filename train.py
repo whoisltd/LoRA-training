@@ -79,7 +79,11 @@ class Trainer:
         # TODO: Initialize the DistributedDataParallel wrapper for the model. 
         # You would need to pass the model and specify the device IDs
         # and output device for the data parallelism.
-        self.model = None ### YOUR CODE HERE ###
+        self.model = torch.nn.parallel.DistributedDataParallel(
+        self.model,
+        device_ids=[int(os.environ['LOCAL_RANK'])],
+        output_device=int(os.environ['LOCAL_RANK']),
+    ) ### YOUR CODE HERE ###
 
         
     def _run_batch(self, batch):
@@ -180,7 +184,7 @@ class Trainer:
             train_dataset,
             batch_size=self.batch_size,
             shuffle=True,
-            sampler=None,
+            sampler=DistributedSampler(train_dataset) if self.is_ddp_training else None,
             collate_fn=DataCollatorForSeq2Seq(self.tokenizer, padding=True, return_tensors="pt"),
         ) ### YOUR CODE HERE ###
 
@@ -339,14 +343,15 @@ if __name__ == "__main__":
     eval_freq = 150
     
     # TODO: Choose strategy
-    distributed_strategy = "no" ### YOUR CODE HERE ###
+    distributed_strategy = "ddp" ### YOUR CODE HERE ###
     
     if distributed_strategy  == "ddp":
         # TODO: Initialize the process group for distributed data parallelism with nccl backend.
         # After that, you should set the 'local_rank' from the environment variable 'LOCAL_RANK'.
         
         # Initialize the process group ### YOUR CODE HERE ###
-        local_rank = None ### YOUR CODE HERE ###
+        torch.distributed.init_process_group(backend=backend)
+        local_rank = int(os.environ['LOCAL_RANK']) ### YOUR CODE HERE ###
     else:
         os.environ['RANK'] = '0'
         local_rank = 0
